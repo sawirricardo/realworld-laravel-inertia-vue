@@ -10,7 +10,12 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        return inertia('Article/Index');
+        return inertia('Article/Index', [
+            'articles' => Article::query()
+                ->with(['tags','user'])
+                ->withCount(['comments','users'])
+                ->get(),
+        ]);
     }
 
     public function create()

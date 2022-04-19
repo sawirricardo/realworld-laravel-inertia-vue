@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -35,14 +36,25 @@ class UserController extends Controller
 
     public function show($name)
     {
+        $user = User::query()
+            ->withCount('followers')
+            ->where('name', $name)
+            ->firstOrFail();
+
         return inertia('User/Show', [
-            'user' => User::query()->where('name', $name)->firstOrFail(),
+            'user' => $user,
+            'articles' => Article::query()->with(['user','tags'])
+            ->withCount(['comments','users'])
+            ->whereBelongsTo($user)
+            ->get(),
         ]);
     }
 
     public function edit()
     {
-        return inertia('User/Edit');
+        return inertia('User/Edit', [
+            'user' => Auth::user(),
+        ]);
     }
 
     public function update()
@@ -57,11 +69,15 @@ class UserController extends Controller
             'avatar_url' => ['active_url'],
             'bio' => ['string'],
         ]);
-        return ;
+        return redirect()->route('user.edit');
     }
 
     public function destroy()
     {
-        return;
+        Auth::logout();
+        Auth::user()->delete();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect()->route('users.create');
     }
 }

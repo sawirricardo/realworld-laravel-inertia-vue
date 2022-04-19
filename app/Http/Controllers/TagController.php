@@ -12,8 +12,10 @@ class TagController extends Controller
         return inertia('Tag/Show', [
             'articles' => Article::with('tags')
                 ->whereHas('tags', function ($query) use ($tag) {
-                    $query->where('tag.id', $tag->getKey());
+                    $query->where('tags.id', $tag->getKey());
                 })->get(),
+            'tag' => $tag,
+            'tags' => Tag::query()->get(),
             ]);
     }
 }
