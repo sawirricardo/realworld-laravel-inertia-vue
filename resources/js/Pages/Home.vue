@@ -1,5 +1,14 @@
-<script setup>
+<script>
 import AppLayout from "../Layouts/AppLayout.vue";
+export default {
+    components: {
+        AppLayout,
+    },
+    props: {
+        tags: [],
+        articles: [],
+    },
+};
 </script>
 <template>
     <AppLayout>
@@ -82,25 +91,12 @@ import AppLayout from "../Layouts/AppLayout.vue";
                             <p>Popular Tags</p>
 
                             <div class="tag-list">
-                                <a href="" class="tag-pill tag-default"
-                                    >programming</a
-                                >
-                                <a href="" class="tag-pill tag-default"
-                                    >javascript</a
-                                >
-                                <a href="" class="tag-pill tag-default"
-                                    >emberjs</a
-                                >
-                                <a href="" class="tag-pill tag-default"
-                                    >angularjs</a
-                                >
-                                <a href="" class="tag-pill tag-default"
-                                    >react</a
-                                >
-                                <a href="" class="tag-pill tag-default">mean</a>
-                                <a href="" class="tag-pill tag-default">node</a>
-                                <a href="" class="tag-pill tag-default"
-                                    >rails</a
+                                <a
+                                    :href="`/tags/${tag.slug}`"
+                                    class="tag-pill tag-default"
+                                    v-for="(tag, index) in tags"
+                                    :key="tag.id"
+                                    >{{ tag.name }}</a
                                 >
                             </div>
                         </div>
