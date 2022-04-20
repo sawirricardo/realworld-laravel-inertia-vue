@@ -43,7 +43,7 @@ const form = useForm({
                             </Link>
                             <span
                                 class="date"
-                                v-text="article.created_at"
+                                v-text="article.created_at_formatted"
                             ></span>
                         </div>
                         <Link
@@ -130,7 +130,7 @@ const form = useForm({
                             </Link>
                             <span
                                 class="date"
-                                v-text="article.created_at"
+                                v-text="article.created_at_formatted"
                             ></span>
                         </div>
                         <Link
@@ -273,7 +273,7 @@ const form = useForm({
                                 ></Link>
                                 <span
                                     class="date-posted"
-                                    v-text="comment.created_at"
+                                    v-text="comment.created_at_formatted"
                                 ></span>
                             </div>
                         </div>

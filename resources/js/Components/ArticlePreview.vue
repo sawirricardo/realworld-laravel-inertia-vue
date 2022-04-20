@@ -27,7 +27,7 @@ export default {
                 >
                     {{ article.user.name }}
                 </Link>
-                <span class="date">{{ article.created_at }}</span>
+                <span class="date" v-text="article.created_at_formatted"></span>
             </div>
             <Link
                 class="btn btn-outline-primary btn-sm pull-xs-right"
