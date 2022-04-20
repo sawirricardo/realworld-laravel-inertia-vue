@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->has(Article::factory(10)->has(Comment::factory()))->create();
+        User::factory(10)->has(Article::factory(10)->has(Comment::factory(10)))->create();
 
         Tag::create(['name' => 'PHP']);
         Tag::create(['name' => 'Javascript']);
