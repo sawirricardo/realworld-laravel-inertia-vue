@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ArticleUser;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleUserController extends Controller
 {
@@ -24,7 +25,7 @@ class ArticleUserController extends Controller
     {
         ArticleUser::firstOrCreate([
             'article_id' => request('article_id'),
-            'user_id' => request('user_id'),
+            'user_id' => Auth::user()->getKey(),
         ]);
         return redirect()->back();
     }
@@ -33,7 +34,7 @@ class ArticleUserController extends Controller
     {
         ArticleUser::query()->where([
             'article_id' => request('article_id'),
-            'user_id' => request('user_id'),
+            'user_id' => Auth::user()->getKey(),
         ])->firstOrFail()->deleteOrFail();
         return redirect()->back();
     }
