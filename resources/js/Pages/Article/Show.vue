@@ -1,40 +1,67 @@
-<script>
-import { Head, Link } from "@inertiajs/inertia-vue3";
+<script setup>
+import { Head, Link, useForm } from "@inertiajs/inertia-vue3";
 import AppLayout from "../../Layouts/AppLayout.vue";
-export default {
-    components: {
-        AppLayout,
-        Head,
-        Link,
+defineProps({
+    article: {
+        title: String,
+        content: String,
+        excerpt: String,
+        user: Object,
+        tags: Array,
     },
-    setup() {},
-};
+});
+
+const form = useForm({
+    comment: "",
+});
 </script>
 <template>
     <AppLayout>
         <div class="article-page">
             <div class="banner">
                 <div class="container">
-                    <h1>How to build webapps that scale</h1>
+                    <h1 v-text="article.title"></h1>
 
                     <div class="article-meta">
-                        <a href=""
-                            ><img src="http://i.imgur.com/Qr71crq.jpg"
-                        /></a>
+                        <Link
+                            :href="
+                                route('users.show', { name: article.user.name })
+                            "
+                        >
+                            <img :src="article.user.avatar_url" />
+                        </Link>
                         <div class="info">
-                            <a href="" class="author">Eric Simons</a>
-                            <span class="date">January 20th</span>
+                            <Link
+                                :href="
+                                    route('users.show', {
+                                        name: article.user.name,
+                                    })
+                                "
+                                v-text="article.user.name"
+                                class="author"
+                            >
+                            </Link>
+                            <span
+                                class="date"
+                                v-text="article.created_at"
+                            ></span>
                         </div>
                         <button class="btn btn-sm btn-outline-secondary">
                             <i class="ion-plus-round"></i>
-                            &nbsp; Follow Eric Simons
-                            <span class="counter">(10)</span>
+                            &nbsp; Follow {{ article.user.name }}
+                            <span
+                                class="counter"
+                                v-text="`(${article.user.followers_count})`"
+                            ></span>
                         </button>
                         &nbsp;&nbsp;
                         <button class="btn btn-sm btn-outline-primary">
                             <i class="ion-heart"></i>
                             &nbsp; Favorite Post
-                            <span class="counter">(29)</span>
+                            <span
+                                class="counter"
+                                v-text="`(${article.users_count})`"
+                            ></span>
                         </button>
                     </div>
                 </div>
@@ -42,110 +69,144 @@ export default {
 
             <div class="container page">
                 <div class="row article-content">
-                    <div class="col-md-12">
-                        <p>
-                            Web development technologies have evolved at an
-                            incredible clip over the past few years.
-                        </p>
-                        <h2 id="introducing-ionic">Introducing RealWorld.</h2>
-                        <p>
-                            It's a great solution for learning how other
-                            frameworks work.
-                        </p>
-                    </div>
+                    <div class="col-md-12" v-html="article.content"></div>
                 </div>
 
                 <hr />
 
                 <div class="article-actions">
                     <div class="article-meta">
-                        <a href="profile.html"
-                            ><img src="http://i.imgur.com/Qr71crq.jpg"
-                        /></a>
+                        <Link
+                            :href="
+                                route('users.show', { name: article.user.name })
+                            "
+                        >
+                            <img :src="article.user.avatar_url" />
+                        </Link>
                         <div class="info">
-                            <a href="" class="author">Eric Simons</a>
-                            <span class="date">January 20th</span>
+                            <Link
+                                :href="
+                                    route('users.show', {
+                                        name: article.user.name,
+                                    })
+                                "
+                                v-text="article.user.name"
+                                class="author"
+                            >
+                            </Link>
+                            <span
+                                class="date"
+                                v-text="article.created_at"
+                            ></span>
                         </div>
-
                         <button class="btn btn-sm btn-outline-secondary">
                             <i class="ion-plus-round"></i>
-                            &nbsp; Follow Eric Simons
+                            &nbsp; Follow {{ article.user.name }}
+                            <span
+                                class="counter"
+                                v-text="`(${article.user.followers_count})`"
+                            ></span>
                         </button>
-                        &nbsp;
+                        &nbsp;&nbsp;
                         <button class="btn btn-sm btn-outline-primary">
                             <i class="ion-heart"></i>
                             &nbsp; Favorite Post
-                            <span class="counter">(29)</span>
+                            <span
+                                class="counter"
+                                v-text="`(${article.users_count})`"
+                            ></span>
                         </button>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-xs-12 col-md-8 offset-md-2">
-                        <form class="card comment-form">
+                        <div
+                            class="card comment-form p-2"
+                            v-if="$page.props.auth.guest"
+                        >
+                            Please
+                            <Link :href="route('login')">Login first</Link>
+                        </div>
+                        <form
+                            @submit.prevent="
+                                form.post(
+                                    route('articles.comments.store', {
+                                        article: article.id,
+                                    })
+                                )
+                            "
+                            v-if="$page.props.auth.check"
+                            class="card comment-form"
+                        >
                             <div class="card-block">
                                 <textarea
+                                    v-model="form.comment"
                                     class="form-control"
                                     placeholder="Write a comment..."
                                     rows="3"
                                 ></textarea>
+                                <div
+                                    v-if="form.errors.comment"
+                                    v-text="form.errors.comment"
+                                ></div>
                             </div>
                             <div class="card-footer">
                                 <img
-                                    src="http://i.imgur.com/Qr71crq.jpg"
+                                    :src="$page.props.user.avatar_url"
                                     class="comment-author-img"
                                 />
-                                <button class="btn btn-sm btn-primary">
+                                <button
+                                    class="btn btn-sm btn-primary"
+                                    :disabled="form.processing"
+                                >
                                     Post Comment
                                 </button>
                             </div>
                         </form>
 
-                        <div class="card">
+                        <div v-if="article.comments.length == 0" class="card">
                             <div class="card-block">
-                                <p class="card-text">
-                                    With supporting text below as a natural
-                                    lead-in to additional content.
-                                </p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="" class="comment-author">
-                                    <img
-                                        src="http://i.imgur.com/Qr71crq.jpg"
-                                        class="comment-author-img"
-                                    />
-                                </a>
-                                &nbsp;
-                                <a href="" class="comment-author"
-                                    >Jacob Schmidt</a
-                                >
-                                <span class="date-posted">Dec 29th</span>
+                                <p class="card-text">No Comments yet</p>
                             </div>
                         </div>
-
-                        <div class="card">
+                        <div
+                            v-if="article.comments.length > 0"
+                            v-for="comment in article.comments"
+                            class="card"
+                        >
                             <div class="card-block">
-                                <p class="card-text">
-                                    With supporting text below as a natural
-                                    lead-in to additional content.
-                                </p>
+                                <p
+                                    class="card-text"
+                                    v-text="comment.content"
+                                ></p>
                             </div>
                             <div class="card-footer">
-                                <a href="" class="comment-author">
-                                    <img
-                                        src="http://i.imgur.com/Qr71crq.jpg"
+                                <Link
+                                    :href="
+                                        route('users.show', {
+                                            name: comment.user.name,
+                                        })
+                                    "
+                                    class="comment-author"
+                                    ><img
                                         class="comment-author-img"
-                                    />
-                                </a>
+                                        :src="comment.user.avatar_url"
+                                /></Link>
                                 &nbsp;
-                                <a href="" class="comment-author"
-                                    >Jacob Schmidt</a
-                                >
-                                <span class="date-posted">Dec 29th</span>
-                                <span class="mod-options">
-                                    <i class="ion-edit"></i>
-                                    <i class="ion-trash-a"></i>
-                                </span>
+                                <Link
+                                    :href="
+                                        route('users.show', {
+                                            name: comment.user.name,
+                                        })
+                                    "
+                                    class="comment-author"
+                                    v-text="comment.user.name"
+                                ></Link>
+                                <span
+                                    class="date-posted"
+                                    v-text="comment.created_at"
+                                ></span>
                             </div>
                         </div>
                     </div>

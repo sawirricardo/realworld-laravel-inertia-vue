@@ -38,15 +38,15 @@ class UserController extends Controller
     {
         $user = User::query()
             ->withCount('followers')
+            ->with(['articles' => function ($query) {
+                $query->with(['user','tags']);
+                $query->withCount(['users','comments']);
+            },])
             ->where('name', $name)
             ->firstOrFail();
 
         return inertia('User/Show', [
             'user' => $user,
-            'articles' => Article::query()->with(['user','tags'])
-            ->withCount(['comments','users'])
-            ->whereBelongsTo($user)
-            ->get(),
         ]);
     }
 

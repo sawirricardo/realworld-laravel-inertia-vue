@@ -7,6 +7,7 @@ defineProps({
         avatar_url: String,
         bio: String,
         articles: Array,
+        article_favorites: Array,
         followers_count: Number,
     },
 });
@@ -39,7 +40,7 @@ defineProps({
                             <ul class="nav nav-pills outline-active">
                                 <li class="nav-item">
                                     <Link
-                                        class="nav-link active"
+                                        class="nav-link"
                                         :href="
                                             route('users.show', {
                                                 name: user.name,
@@ -55,18 +56,18 @@ defineProps({
                                                 name: user.name,
                                             })
                                         "
-                                        class="nav-link"
+                                        class="nav-link active"
                                         >Favorited Articles</Link
                                     >
                                 </li>
                             </ul>
                         </div>
 
-                        <div v-if="user.articles.length === 0">
-                            There's no article currently
+                        <div v-if="user.article_favorites.length === 0">
+                            There's no article favorited currently
                         </div>
                         <ArticlePreview
-                            v-for="article in user.articles"
+                            v-for="{ article } in user.article_favorites"
                             :key="`article_${article.id}`"
                             :article="article"
                         />

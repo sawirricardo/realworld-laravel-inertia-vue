@@ -14,6 +14,7 @@ class ArticleController extends Controller
             'articles' => Article::query()
                 ->with(['tags','user'])
                 ->withCount(['comments','users'])
+                ->latest()
                 ->get(),
         ]);
     }
@@ -49,7 +50,15 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
-        $article->load(['tags', 'user', 'comments.user','users AS favoriters']);
+        $article->loadCount(['users'])
+            ->load([
+                'tags',
+                'user' => function ($query) {
+                    $query->withCount('followers');
+                },
+                'comments.user',
+                'users',
+            ]);
         return inertia('Article/Show', ['article' => $article]);
     }
 

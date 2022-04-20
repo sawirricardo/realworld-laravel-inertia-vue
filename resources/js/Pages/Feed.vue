@@ -1,18 +1,8 @@
 <script>
-import { Link } from "@inertiajs/inertia-vue3";
 import AppLayout from "../Layouts/AppLayout.vue";
 import ArticlePreview from "../Components/ArticlePreview.vue";
 export default {
-    computed: {
-        isCheck() {
-            return $page.props.auth.user;
-        },
-        isGuest() {
-            return !this.authCheck;
-        },
-    },
     components: {
-        Link,
         AppLayout,
         ArticlePreview,
     },
@@ -77,16 +67,15 @@ export default {
                             <p>Popular Tags</p>
 
                             <div class="tag-list">
-                                <Link
+                                <a
                                     :href="
                                         route('tags.show', { slug: tag.slug })
                                     "
                                     class="tag-pill tag-default"
                                     v-for="(tag, index) in tags"
                                     :key="tag.id"
+                                    >{{ tag.name }}</a
                                 >
-                                    {{ tag.name }}
-                                </Link>
                             </div>
                         </div>
                     </div>
