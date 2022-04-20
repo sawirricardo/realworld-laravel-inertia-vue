@@ -56,13 +56,6 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $article->loadCount(['users'])
-            ->when(Auth::check(), function ($article) {
-                $article->loadExists([
-                    'users' => function ($query) {
-                        $query->where('user_id', Auth::user()->getKey());
-                    },
-                ]);
-            })
             ->load([
                 'tags',
                 'user' => function ($query) {
@@ -77,7 +70,14 @@ class ArticleController extends Controller
                 },
                 'comments.user',
                 'users',
-            ]);
+            ])
+            ->when(Auth::check(), function ($article) {
+                $article->loadExists([
+                    'users' => function ($query) {
+                        $query->where('user_id', Auth::user()->getKey());
+                    },
+                ]);
+            });
         return inertia('Article/Show', ['article' => $article]);
     }
 
