@@ -14,6 +14,11 @@ class ArticleController extends Controller
             'articles' => Article::query()
                 ->with(['tags','user'])
                 ->withCount(['comments','users'])
+                ->when(Auth::check(), function ($query) {
+                    $query->withExists(['users' => function ($query) {
+                        $query->where('user_id', Auth::user()->getKey());
+                    },]);
+                })
                 ->latest()
                 ->get(),
         ]);
@@ -51,10 +56,24 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $article->loadCount(['users'])
+            ->when(Auth::check(), function ($article) {
+                $article->loadExists([
+                    'users' => function ($query) {
+                        $query->where('user_id', Auth::user()->getKey());
+                    },
+                ]);
+            })
             ->load([
                 'tags',
                 'user' => function ($query) {
                     $query->withCount('followers');
+                    $query->when(Auth::check(), function ($query) {
+                        $query->withExists([
+                            'followers' => function ($query) {
+                                $query->where('user_id', Auth::user()->getKey());
+                            },
+                        ]);
+                    });
                 },
                 'comments.user',
                 'users',
