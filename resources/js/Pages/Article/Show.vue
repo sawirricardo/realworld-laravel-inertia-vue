@@ -46,23 +46,57 @@ const form = useForm({
                                 v-text="article.created_at"
                             ></span>
                         </div>
-                        <button class="btn btn-sm btn-outline-secondary">
+                        <Link
+                            class="btn btn-sm btn-outline-secondary"
+                            as="button"
+                            :method="
+                                $page.props.auth.guest
+                                    ? 'get'
+                                    : article.user.followers_exists
+                                    ? 'delete'
+                                    : 'post'
+                            "
+                            :href="
+                                $page.props.auth.guest
+                                    ? route('login')
+                                    : route('articles.favorite', {
+                                          article: article.id,
+                                      })
+                            "
+                        >
                             <i class="ion-plus-round"></i>
                             &nbsp; Follow {{ article.user.name }}
                             <span
                                 class="counter"
                                 v-text="`(${article.user.followers_count})`"
                             ></span>
-                        </button>
+                        </Link>
                         &nbsp;&nbsp;
-                        <button class="btn btn-sm btn-outline-primary">
+                        <Link
+                            class="btn btn-sm btn-outline-primary"
+                            as="button"
+                            :method="
+                                $page.props.auth.guest
+                                    ? 'get'
+                                    : article.users_exists
+                                    ? 'delete'
+                                    : 'post'
+                            "
+                            :href="
+                                $page.props.auth.guest
+                                    ? route('login')
+                                    : route('articles.favorite', {
+                                          article: article.id,
+                                      })
+                            "
+                        >
                             <i class="ion-heart"></i>
                             &nbsp; Favorite Post
                             <span
                                 class="counter"
                                 v-text="`(${article.users_count})`"
                             ></span>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -99,23 +133,57 @@ const form = useForm({
                                 v-text="article.created_at"
                             ></span>
                         </div>
-                        <button class="btn btn-sm btn-outline-secondary">
+                        <Link
+                            class="btn btn-sm btn-outline-secondary"
+                            as="button"
+                            :method="
+                                $page.props.auth.guest
+                                    ? 'get'
+                                    : article.user.followers_exists
+                                    ? 'delete'
+                                    : 'post'
+                            "
+                            :href="
+                                $page.props.auth.guest
+                                    ? route('login')
+                                    : route('articles.favorite', {
+                                          article: article.id,
+                                      })
+                            "
+                        >
                             <i class="ion-plus-round"></i>
                             &nbsp; Follow {{ article.user.name }}
                             <span
                                 class="counter"
                                 v-text="`(${article.user.followers_count})`"
                             ></span>
-                        </button>
+                        </Link>
                         &nbsp;&nbsp;
-                        <button class="btn btn-sm btn-outline-primary">
+                        <Link
+                            class="btn btn-sm btn-outline-primary"
+                            as="button"
+                            :method="
+                                $page.props.auth.guest
+                                    ? 'get'
+                                    : article.users_exists
+                                    ? 'delete'
+                                    : 'post'
+                            "
+                            :href="
+                                $page.props.auth.guest
+                                    ? route('login')
+                                    : route('articles.favorite', {
+                                          article: article.id,
+                                      })
+                            "
+                        >
                             <i class="ion-heart"></i>
                             &nbsp; Favorite Post
                             <span
                                 class="counter"
                                 v-text="`(${article.users_count})`"
                             ></span>
-                        </button>
+                        </Link>
                     </div>
                 </div>
 

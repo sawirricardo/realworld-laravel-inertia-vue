@@ -21,12 +21,27 @@ defineProps({
                             <img :src="user.avatar_url" class="user-img" />
                             <h4 v-text="user.name"></h4>
                             <p v-text="user.bio"></p>
-                            <button
+                            <Link
                                 class="btn btn-sm btn-outline-secondary action-btn"
+                                as="button"
+                                :method="
+                                    $page.props.auth.guest
+                                        ? 'get'
+                                        : article.user.followers_exists
+                                        ? 'delete'
+                                        : 'post'
+                                "
+                                :href="
+                                    $page.props.auth.guest
+                                        ? route('login')
+                                        : route('articles.favorite', {
+                                              article: article.id,
+                                          })
+                                "
                             >
                                 <i class="ion-plus-round"></i>
                                 &nbsp; Follow {{ user.name }}
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

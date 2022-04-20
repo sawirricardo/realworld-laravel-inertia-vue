@@ -29,9 +29,24 @@ export default {
                 </Link>
                 <span class="date">{{ article.created_at }}</span>
             </div>
-            <button class="btn btn-outline-primary btn-sm pull-xs-right">
+            <Link
+                class="btn btn-outline-primary btn-sm pull-xs-right"
+                as="button"
+                :method="
+                    $page.props.auth.guest
+                        ? 'get'
+                        : article.users_exists
+                        ? 'delete'
+                        : 'post'
+                "
+                :href="
+                    $page.props.auth.guest
+                        ? route('login')
+                        : route('articles.favorite', { article: article.id })
+                "
+            >
                 <i class="ion-heart"></i> {{ article.users_count }}
-            </button>
+            </Link>
         </div>
         <Link
             :href="route('articles.show', { slug: article.slug })"
