@@ -12,6 +12,8 @@ class Article extends Model
     use HasFactory;
     use HasSlug;
 
+    protected $appends = ['created_at_formatted'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -37,5 +39,10 @@ class Article extends Model
         return SlugOptions::create()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
+    }
+
+    public function getCreatedAtFormattedAttribute():string
+    {
+        return $this->created_at->format('d M Y');
     }
 }
