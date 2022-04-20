@@ -40,4 +40,6 @@ Route::post('register', [UserController::class,'store']);
 Route::get('users/{name}', [UserController::class,'show'])->name('users.show');
 Route::get('settings', [UserController::class,'edit'])->middleware(['auth'])->name('user.edit');
 Route::put('user', [UserController::class,'update'])->middleware(['auth']);
+Route::post('articles/{article}/favorite', [ArticleUserController::class,'store'])->middleware(['auth']);
+Route::delete('articles/{article}/favorite', [ArticleUserController::class,'destroy'])->middleware(['auth']);
 Route::get('article-users/{name}', [ArticleUserController::class,'index'])->name('article-users.show');
